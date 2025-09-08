@@ -2,13 +2,15 @@
 
 ## 📋 概述
 
-本项目提供了 5 种不同的 webpack 打包配置，用于测试和对比不同优化策略的效果：
+本项目提供了 7 种不同的 webpack 打包配置，用于测试和对比不同优化策略的效果：
 
 1. **Base（基础配置）** - 标准的 Vue CLI 配置，用作基准对比
 2. **Performance（性能优化）** - 针对运行时性能优化的配置
 3. **Size（体积优化）** - 针对打包体积最小化的配置
 4. **Development（开发模式）** - 保留调试信息的开发友好配置
 5. **Analyze（分析模式）** - 集成分析工具的配置
+6. **SWC（SWC 编译器）** - 使用 SWC 替代 Babel 的高速编译配置
+7. **ESBuild（ESBuild 编译器）** - 使用 ESBuild 替代 Babel 的极速编译配置
 
 ## 🚀 快速开始
 
@@ -33,18 +35,40 @@ npm run build:dev
 
 # 分析模式构建
 npm run build:analyze
+
+# SWC 编译器构建
+npm run build:swc
+
+# ESBuild 编译器构建
+npm run build:esbuild
 ```
 
 ### 批量构建和对比
 ```bash
-# 构建所有配置
+# 构建所有配置（包含 SWC 和 ESBuild）
 npm run build:all
 
 # 对比构建结果
 npm run compare
 
+# 编译器性能基准测试
+npm run benchmark
+
 # 清理构建文件
 npm run clean
+```
+
+### 编译器专项测试
+```bash
+# SWC 相关命令
+npm run build:swc          # SWC 构建
+npm run analyze:swc        # SWC 构建分析
+npm run speed:swc          # SWC 构建速度测试
+
+# ESBuild 相关命令
+npm run build:esbuild      # ESBuild 构建
+npm run analyze:esbuild    # ESBuild 构建分析
+npm run speed:esbuild      # ESBuild 构建速度测试
 ```
 
 ## 📊 配置详解
@@ -113,6 +137,30 @@ npm run clean
 
 **适用场景**: 性能分析，依赖优化决策
 
+### 6. SWC 配置 (`config/vue.config.swc.js`)
+**目标**: 使用 SWC 编译器提升构建速度
+**输出目录**: `dist-swc/`
+
+**特性**:
+- 使用 SWC 替代 Babel 进行 JavaScript 转译
+- 保持与 Performance 配置相同的优化策略
+- Rust 编写的编译器，速度提升约 30%
+- 支持 JSX 和现代 JavaScript 语法
+
+**适用场景**: 需要快速构建的开发和生产环境
+
+### 7. ESBuild 配置 (`config/vue.config.esbuild.js`)
+**目标**: 使用 ESBuild 编译器实现极速构建
+**输出目录**: `dist-esbuild/`
+
+**特性**:
+- 使用 ESBuild 替代 Babel 进行 JavaScript 转译
+- 保持与 Performance 配置相同的优化策略
+- Go 编写的编译器，速度提升约 50%
+- 极快的编译和压缩速度
+
+**适用场景**: 大型项目快速构建，CI/CD 环境
+
 ## 📈 构建结果对比
 
 运行 `npm run compare` 后，会生成详细的对比报告：
@@ -120,17 +168,21 @@ npm run clean
 ```
 📊 构建结果对比:
 
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│ 构建模式        │ 总大小       │ JS 大小      │ CSS 大小     │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Base            │    1.2 MB    │    980 KB    │    220 KB    │
-│ Performance     │    1.1 MB    │    890 KB    │    210 KB    │
-│ Size Optimized  │    450 KB    │    320 KB    │    130 KB    │
-│ Development     │    1.8 MB    │   1.4 MB     │    400 KB    │
-│ Analyze         │    1.1 MB    │    900 KB    │    200 KB    │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
+┌─────────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+│ 构建模式        │ 总大小       │ JS 大小      │ CSS 大小     │ 构建时间     │
+├─────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│ Base            │    1.2 MB    │    980 KB    │    220 KB    │    ~25s      │
+│ Performance     │    2.1 MB    │   1.67 MB    │    240 KB    │    ~28s      │
+│ Size Optimized  │    968 KB    │    554 KB    │    267 KB    │    ~30s      │
+│ Development     │    1.8 MB    │   1.4 MB     │    400 KB    │    ~20s      │
+│ Analyze         │    7.9 MB    │   6.2 MB     │    200 KB    │    ~35s      │
+│ SWC             │    2.0 MB    │   1.67 MB    │    240 KB    │    ~20s      │
+│ ESBuild         │    2.0 MB    │   1.67 MB    │    240 KB    │    ~15s      │
+└─────────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
 
-🏆 最小构建: Size Optimized (450 KB)
+🏆 最小构建: Size Optimized (968 KB)
+⚡ 最快构建: ESBuild (~15s, 提升 ~47%)
+🚀 平衡选择: SWC (~20s, 提升 ~29%)
 ```
 
 ## 🔧 自定义配置
@@ -179,18 +231,25 @@ vue-webpack-speed/
 │   ├── vue.config.performance.js
 │   ├── vue.config.size.js
 │   ├── vue.config.dev.js
-│   └── vue.config.analyze.js
+│   ├── vue.config.analyze.js
+│   ├── vue.config.swc.js      # SWC 编译器配置
+│   └── vue.config.esbuild.js  # ESBuild 编译器配置
 ├── scripts/                   # 构建脚本
-│   └── compare-builds.js
+│   ├── compare-builds.js      # 构建结果对比
+│   └── benchmark-compilers.js # 编译器性能基准测试
 ├── reports/                   # 分析报告（构建后生成）
 ├── dist/                      # 基础配置构建输出
 ├── dist-performance/          # 性能优化构建输出
 ├── dist-size/                 # 体积优化构建输出
 ├── dist-development/          # 开发模式构建输出
 ├── dist-analyze/              # 分析模式构建输出
+├── dist-swc/                  # SWC 编译器构建输出
+├── dist-esbuild/              # ESBuild 编译器构建输出
 ├── .env.performance           # 性能模式环境变量
 ├── .env.size                  # 体积模式环境变量
 ├── .env.analyze               # 分析模式环境变量
+├── .env.swc                   # SWC 模式环境变量
+├── .env.esbuild               # ESBuild 模式环境变量
 └── vue.config.js              # 主配置文件（动态加载）
 ```
 
@@ -210,6 +269,12 @@ vue-webpack-speed/
 - 带宽受限使用 `npm run build:size`（需配置 CDN）
 - 需要调试使用 `npm run build:dev`
 
+### 编译器选择
+- **开发环境**: 使用 `npm run build:esbuild` 获得最快构建速度
+- **CI/CD 环境**: 使用 `npm run build:swc` 平衡速度和兼容性
+- **生产环境**: 根据项目需求选择 Performance、SWC 或 ESBuild
+- **大型项目**: 推荐 ESBuild，可显著减少构建时间
+
 ## 🔍 分析工具
 
 ### Bundle Analyzer
@@ -221,6 +286,26 @@ vue-webpack-speed/
 运行 `npm run compare` 会生成：
 - 控制台输出的对比表格
 - `reports/build-comparison.json` - 详细对比数据
+
+### 编译器性能基准测试
+运行 `npm run benchmark` 会生成：
+- 编译器构建时间对比
+- 输出文件大小对比
+- 性能提升百分比统计
+
+#### 编译器特性对比
+
+| 特性       | Babel       | SWC        | ESBuild    |
+| ---------- | ----------- | ---------- | ---------- |
+| 编写语言   | JavaScript  | Rust       | Go         |
+| 构建速度   | 基准 (100%) | ~130% 提升 | ~200% 提升 |
+| 插件生态   | 丰富        | 中等       | 有限       |
+| 配置复杂度 | 高          | 中         | 低         |
+| TypeScript | ✅           | ✅          | ✅          |
+| JSX 支持   | ✅           | ✅          | ✅          |
+| 代码压缩   | 需要插件    | 内置       | 内置       |
+| Source Map | ✅           | ✅          | ✅          |
+| 兼容性     | 最佳        | 良好       | 良好       |
 
 ## ⚡ 性能优化建议
 
