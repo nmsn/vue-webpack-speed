@@ -2,12 +2,29 @@ const { defineConfig } = require("@vue/cli-service");
 const CompressionPlugin = require("compression-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const ThreadLoader = require("thread-loader");
 
-const performanceConfig = defineConfig({
+// thread-loader 配置
+const threadLoaderOptions = {
+  workers: require("os").cpus().length - 1,
+  poolTimeout: Infinity,
+};
+
+const threadConfig = defineConfig({
   transpileDependencies: true,
   productionSourceMap: false,
-  outputDir: "dist-performance",
+  outputDir: "dist-thread",
   configureWebpack: (config) => {
+    // 开启文件系统缓存
+    config.cache = {
+      type: "filesystem",
+      buildDependencies: {
+        config: [__filename],
+      },
+    };
+
     // 添加插件
     config.plugins.push(
       new CompressionPlugin({
@@ -24,7 +41,7 @@ const performanceConfig = defineConfig({
         new BundleAnalyzerPlugin({
           analyzerMode: "server",
           openAnalyzer: true,
-          reportFilename: "../reports/performance-bundle-report.html",
+          reportFilename: "../reports/thread-bundle-report.html",
         })
       );
     }
@@ -35,6 +52,23 @@ const performanceConfig = defineConfig({
         exclude: ["MiniCssExtractPlugin"],
       })
     );
+
+    // 替换 minimizer 为支持并行的版本
+    config.optimization.minimizer = [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            drop_debugger: true,
+            pure_funcs: ["console.log"],
+          },
+        },
+      }),
+      new CssMinimizerPlugin({
+        parallel: true,
+      }),
+    ];
 
     // 优化配置
     config.optimization = {
@@ -81,6 +115,49 @@ const performanceConfig = defineConfig({
     };
   },
   chainWebpack: (config) => {
+    // 配置 thread-loader + swc-loader
+    config.module
+      .rule("js")
+      .test(/\.m?jsx?$/)
+      .exclude.add(/node_modules/)
+      .end()
+      .use("thread-loader")
+      .loader("thread-loader")
+      .options(threadLoaderOptions)
+      .end()
+      .use("swc-loader")
+      .loader("swc-loader")
+      .options({
+        jsc: {
+          parser: {
+            syntax: "ecmascript",
+            jsx: true,
+            dynamicImport: true,
+            decorators: false,
+          },
+          transform: {
+            react: {
+              pragma: "h",
+              pragmaFrag: "Fragment",
+              throwIfNamespace: false,
+              development: false,
+              useBuiltins: false,
+            },
+          },
+          target: "es2015",
+          loose: false,
+          externalHelpers: false,
+        },
+        module: {
+          type: "es6",
+        },
+        minify: process.env.NODE_ENV === "production",
+        sourceMaps: false,
+      });
+
+    // 移除默认的 babel-loader
+    config.module.rule("js").uses.delete("babel-loader");
+
     // 预加载和预获取 - 安全检查插件是否存在
     if (config.plugins.has("preload")) {
       config.plugin("preload").tap((options) => {
@@ -100,18 +177,7 @@ const performanceConfig = defineConfig({
         return options;
       });
     }
-
-    // 优化 Terser - 安全检查
-    if (config.optimization.minimizers.has("terser")) {
-      config.optimization.minimizer("terser").tap((args) => {
-        args[0].terserOptions.compress.drop_console = true;
-        args[0].terserOptions.compress.drop_debugger = true;
-        args[0].terserOptions.compress.pure_funcs = ["console.log"];
-        return args;
-      });
-    }
   },
 });
 
-// 导出配置
-module.exports = performanceConfig;
+module.exports = threadConfig;
