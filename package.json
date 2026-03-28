@@ -13,6 +13,7 @@
     "build:swc": "vue-cli-service build --mode swc",
     "build:esbuild": "vue-cli-service build --mode esbuild",
     "build:thread": "vue-cli-service build --mode thread",
+    "build:cache": "vue-cli-service build --mode cache",
     "build:all": "npm run clean && npm run build:base && npm run build:performance && npm run build:size && npm run build:analyze && npm run build:swc && npm run build:esbuild",
     "clean": "rimraf dist-* reports",
     "compare": "node scripts/compare-builds.js",
@@ -24,6 +25,7 @@
     "analyze:swc": "ANALYZE=true vue-cli-service build --mode swc",
     "analyze:esbuild": "ANALYZE=true vue-cli-service build --mode esbuild",
     "analyze:thread": "ANALYZE=true vue-cli-service build --mode thread",
+    "analyze:cache": "ANALYZE=true vue-cli-service build --mode cache",
     "speed:base": "SPEED_MEASURE=true vue-cli-service build",
     "speed:performance": "SPEED_MEASURE=true vue-cli-service build --mode performance",
     "speed:size": "SPEED_MEASURE=true vue-cli-service build --mode size",
@@ -31,6 +33,7 @@
     "speed:swc": "SPEED_MEASURE=true vue-cli-service build --mode swc",
     "speed:esbuild": "SPEED_MEASURE=true vue-cli-service build --mode esbuild",
     "speed:thread": "SPEED_MEASURE=true vue-cli-service build --mode thread",
+    "speed:cache": "SPEED_MEASURE=true vue-cli-service build --mode cache",
     "full-analyze:base": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build",
     "full-analyze:performance": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build --mode performance",
     "full-analyze:size": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build --mode size",
@@ -38,6 +41,7 @@
     "full-analyze:swc": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build --mode swc",
     "full-analyze:esbuild": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build --mode esbuild",
     "full-analyze:thread": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build --mode thread",
+    "full-analyze:cache": "ANALYZE=true SPEED_MEASURE=true vue-cli-service build --mode cache",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
