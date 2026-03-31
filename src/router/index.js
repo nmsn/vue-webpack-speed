@@ -23,6 +23,11 @@ const routes = [
     name: "Canvas",
     component: () => import("../views/Canvas.vue"),
   },
+  {
+    path: "/request-demo",
+    name: "RequestDemo",
+    component: () => import("../views/RequestDemo.vue"),
+  },
 ];
 
 const router = new VueRouter({

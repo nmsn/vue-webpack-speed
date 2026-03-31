@@ -11,6 +11,7 @@
           <el-menu-item index="/login">登录</el-menu-item>
           <el-menu-item index="/products">产品列表</el-menu-item>
           <el-menu-item index="/canvas">Canvas 画板</el-menu-item>
+          <el-menu-item index="/request-demo">请求演示</el-menu-item>
         </el-menu>
       </el-header>
       <el-main>
