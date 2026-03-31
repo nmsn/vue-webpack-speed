@@ -40,3 +40,6 @@ build-comparison.json
 # Temporary files
 *.tmp
 *.log
+
+# Worktrees
+.worktrees/
