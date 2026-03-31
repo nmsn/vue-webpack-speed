@@ -12,13 +12,8 @@
           <el-card class="control-card" shadow="hover">
             <div slot="header" class="control-header">
               <span>用户请求 (user)</span>
-              <el-switch v-model="userEnabled" active-text="启用" inactive-text="禁用"></el-switch>
             </div>
             <el-form label-width="80px" size="small">
-              <el-form-item label="staleTime">
-                <el-input-number v-model="userStaleTime" :min="0" :step="1000"></el-input-number>
-                <span class="unit">ms</span>
-              </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="mini" @click="userRefetch" :loading="user.loading">refetch</el-button>
                 <el-button size="mini" @click="userInvalidate">invalidate</el-button>
@@ -30,13 +25,8 @@
           <el-card class="control-card" shadow="hover">
             <div slot="header" class="control-header">
               <span>产品列表 (products)</span>
-              <el-switch v-model="productsEnabled" active-text="启用" inactive-text="禁用"></el-switch>
             </div>
             <el-form label-width="80px" size="small">
-              <el-form-item label="staleTime">
-                <el-input-number v-model="productsStaleTime" :min="0" :step="1000"></el-input-number>
-                <span class="unit">ms</span>
-              </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="mini" @click="productsRefetch" :loading="products.loading">refetch</el-button>
                 <el-button size="mini" @click="productsInvalidate">invalidate</el-button>
@@ -224,11 +214,6 @@ const mockErrorApi = () => new Promise((resolve, reject) => {
   setTimeout(() => reject(new Error('服务器内部错误: 500')), 500)
 })
 
-// For race test - returns at random delay
-const mockRaceApi = (delay, id) => new Promise((resolve) => {
-  setTimeout(() => resolve({ id, delay, time: Date.now() }), delay)
-})
-
 export default {
   name: 'RequestDemo',
 
@@ -261,19 +246,26 @@ export default {
       onError: (err) => {
         this.$message.error(err.message)
       }
+    }),
+    createRequestMixin({
+      name: 'testError',
+      queryKey: ['test', 'error'],
+      queryFn: () => new Promise((_resolve, reject) => {
+        setTimeout(() => reject(new Error('手动触发错误')), 300)
+      }),
+      enabled: false,
+      onError: (err) => {
+        this.$message.error('错误被 mixin 捕获: ' + err.message)
+      }
     })
   ],
 
   data() {
     return {
       // User controls
-      userEnabled: true,
-      userStaleTime: 0,
       userFetchedAt: null,
 
       // Products controls
-      productsEnabled: true,
-      productsStaleTime: 0,
       productsFetchedAt: null,
 
       // Manual error
@@ -300,29 +292,43 @@ export default {
     // Test methods
     testRaceCondition() {
       this.raceResults = []
-      this.raceRequestId++
+      this.racing = true
 
-      const requestId = this.raceRequestId
-      const delays = [1000, 500, 1500, 300, 2000]
-
-      delays.forEach((delay, index) => {
-        const startTime = Date.now()
-        mockRaceApi(delay, `req-${requestId}-${index + 1}`)
-          .then(result => {
-            // Only accept results from the latest request series
-            if (requestId === this.raceRequestId) {
-              result.winner = this.raceResults.length === 0
-              this.raceResults.push(result)
-            }
-          })
+      // Create a mixin instance that fetches with random delay
+      const testMixin = createRequestMixin({
+        name: 'race',
+        queryKey: ['race', Date.now()],
+        queryFn: () => new Promise((resolve) => {
+          const delay = Math.random() * 1000 + 200
+          setTimeout(() => resolve({ delay: Math.round(delay), time: Date.now() }), delay)
+        }),
+        enabled: true,
+        staleTime: 0
       })
+
+      // Apply mixin methods temporarily
+      Object.assign(this, testMixin.data())
+      Object.assign(this, { methods: testMixin.methods })
+
+      // Fire 3 rapid fetches
+      this.raceFetch()
+      setTimeout(() => {
+        this.raceFetch()
+        setTimeout(() => {
+          this.raceFetch()
+          // Wait for all to settle
+          setTimeout(() => {
+            this.racing = false
+            // Show that only the last one's data remains
+            this.raceResults = this.race.data ? [{ id: 1, delay: this.race.data.delay, time: this.race.data.time, winner: true }] : []
+            this.$message.info('竞态测试完成: ' + (this.race.data ? `delay=${this.race.data.delay}ms` : '无数据'))
+          }, 1500)
+        }, 50)
+      }, 50)
     },
 
     triggerError() {
-      // Use the products endpoint but with error
-      mockErrorApi().catch(err => {
-        this.$message.error('触发错误演示: ' + err.message)
-      })
+      this.testErrorFetch()
     },
 
     testManualError() {
