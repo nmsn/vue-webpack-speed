@@ -15,8 +15,16 @@
             </div>
             <el-form label-width="80px" size="small">
               <el-form-item>
-                <el-button type="primary" size="mini" @click="userRefetch" :loading="user.loading">refetch</el-button>
-                <el-button size="mini" @click="userInvalidate">invalidate</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="userRefetch"
+                  :loading="user.loading"
+                  >refetch</el-button
+                >
+                <el-button size="mini" @click="userInvalidate"
+                  >invalidate</el-button
+                >
               </el-form-item>
             </el-form>
           </el-card>
@@ -28,8 +36,16 @@
             </div>
             <el-form label-width="80px" size="small">
               <el-form-item>
-                <el-button type="primary" size="mini" @click="productsRefetch" :loading="products.loading">refetch</el-button>
-                <el-button size="mini" @click="productsInvalidate">invalidate</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="productsRefetch"
+                  :loading="products.loading"
+                  >refetch</el-button
+                >
+                <el-button size="mini" @click="productsInvalidate"
+                  >invalidate</el-button
+                >
               </el-form-item>
             </el-form>
           </el-card>
@@ -41,13 +57,19 @@
             </div>
             <el-form label-width="100px" size="small">
               <el-form-item label="Race Condition">
-                <el-button size="mini" type="warning" @click="testRaceCondition">测试竞态</el-button>
+                <el-button size="mini" type="warning" @click="testRaceCondition"
+                  >测试竞态</el-button
+                >
               </el-form-item>
               <el-form-item label="Error Trigger">
-                <el-button size="mini" type="danger" @click="triggerError">触发错误</el-button>
+                <el-button size="mini" type="danger" @click="triggerError"
+                  >触发错误</el-button
+                >
               </el-form-item>
               <el-form-item label="Manual Error">
-                <el-button size="mini" type="danger" @click="testManualError">手动错误请求</el-button>
+                <el-button size="mini" type="danger" @click="testManualError"
+                  >手动错误请求</el-button
+                >
               </el-form-item>
             </el-form>
           </el-card>
@@ -60,9 +82,27 @@
         <el-card class="result-card">
           <div slot="header">
             <span>用户信息 (user)</span>
-            <el-tag v-if="user.loading" type="warning" size="small" style="margin-left: 10px">Loading...</el-tag>
-            <el-tag v-if="user.error" type="danger" size="small" style="margin-left: 10px">Error</el-tag>
-            <el-tag v-if="user.data && !user.loading && !user.error" type="success" size="small" style="margin-left: 10px">Success</el-tag>
+            <el-tag
+              v-if="user.loading"
+              type="warning"
+              size="small"
+              style="margin-left: 10px"
+              >Loading...</el-tag
+            >
+            <el-tag
+              v-if="user.error"
+              type="danger"
+              size="small"
+              style="margin-left: 10px"
+              >Error</el-tag
+            >
+            <el-tag
+              v-if="user.data && !user.loading && !user.error"
+              type="success"
+              size="small"
+              style="margin-left: 10px"
+              >Success</el-tag
+            >
           </div>
 
           <el-alert
@@ -75,22 +115,50 @@
           ></el-alert>
 
           <el-descriptions :column="2" border v-if="user.data">
-            <el-descriptions-item label="ID">{{ user.data.id }}</el-descriptions-item>
-            <el-descriptions-item label="姓名">{{ user.data.name }}</el-descriptions-item>
-            <el-descriptions-item label="邮箱" :span="2">{{ user.data.email }}</el-descriptions-item>
-            <el-descriptions-item label="fetchedAt">{{ userFetchedAt }}</el-descriptions-item>
+            <el-descriptions-item label="ID">{{
+              user.data.id
+            }}</el-descriptions-item>
+            <el-descriptions-item label="姓名">{{
+              user.data.name
+            }}</el-descriptions-item>
+            <el-descriptions-item label="邮箱" :span="2">{{
+              user.data.email
+            }}</el-descriptions-item>
+            <el-descriptions-item label="fetchedAt">{{
+              userFetchedAt
+            }}</el-descriptions-item>
           </el-descriptions>
 
-          <div v-else-if="!user.loading && !user.error" class="no-data">暂无数据</div>
+          <div v-else-if="!user.loading && !user.error" class="no-data">
+            暂无数据
+          </div>
         </el-card>
 
         <!-- Products Result -->
         <el-card class="result-card">
           <div slot="header">
             <span>产品列表 (products)</span>
-            <el-tag v-if="products.loading" type="warning" size="small" style="margin-left: 10px">Loading...</el-tag>
-            <el-tag v-if="products.error" type="danger" size="small" style="margin-left: 10px">Error</el-tag>
-            <el-tag v-if="products.data && !products.loading && !products.error" type="success" size="small" style="margin-left: 10px">Success</el-tag>
+            <el-tag
+              v-if="products.loading"
+              type="warning"
+              size="small"
+              style="margin-left: 10px"
+              >Loading...</el-tag
+            >
+            <el-tag
+              v-if="products.error"
+              type="danger"
+              size="small"
+              style="margin-left: 10px"
+              >Error</el-tag
+            >
+            <el-tag
+              v-if="products.data && !products.loading && !products.error"
+              type="success"
+              size="small"
+              style="margin-left: 10px"
+              >Success</el-tag
+            >
           </div>
 
           <el-alert
@@ -110,8 +178,16 @@
             size="small"
           >
             <el-table-column prop="id" label="ID" width="60"></el-table-column>
-            <el-table-column prop="name" label="产品名称" width="150"></el-table-column>
-            <el-table-column prop="category" label="分类" width="120"></el-table-column>
+            <el-table-column
+              prop="name"
+              label="产品名称"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              prop="category"
+              label="分类"
+              width="120"
+            ></el-table-column>
             <el-table-column prop="price" label="价格">
               <template slot-scope="scope"> ¥{{ scope.row.price }} </template>
             </el-table-column>
@@ -121,14 +197,18 @@
             <span>fetchedAt: {{ productsFetchedAt }}</span>
           </div>
 
-          <div v-else-if="!products.loading && !products.error" class="no-data">暂无数据</div>
+          <div v-else-if="!products.loading && !products.error" class="no-data">
+            暂无数据
+          </div>
         </el-card>
 
         <!-- Manual Error Result -->
         <el-card class="result-card" v-if="manualErrorData">
           <div slot="header">
             <span>手动错误请求结果</span>
-            <el-tag type="danger" size="small" style="margin-left: 10px">Error</el-tag>
+            <el-tag type="danger" size="small" style="margin-left: 10px"
+              >Error</el-tag
+            >
           </div>
           <el-alert
             :title="manualErrorData"
@@ -143,21 +223,31 @@
         <el-card class="result-card" v-if="raceResults.length > 0">
           <div slot="header">
             <span>竞态测试结果</span>
-            <el-tag type="info" size="small" style="margin-left: 10px">{{ raceResults.length }} 个响应</el-tag>
+            <el-tag type="info" size="small" style="margin-left: 10px"
+              >{{ raceResults.length }} 个响应</el-tag
+            >
           </div>
-          <el-table
-            :data="raceResults"
-            style="width: 100%"
-            size="small"
-          >
-            <el-table-column prop="id" label="请求ID" width="100"></el-table-column>
-            <el-table-column prop="delay" label="延迟(ms)" width="120"></el-table-column>
+          <el-table :data="raceResults" style="width: 100%" size="small">
+            <el-table-column
+              prop="id"
+              label="请求ID"
+              width="100"
+            ></el-table-column>
+            <el-table-column
+              prop="delay"
+              label="延迟(ms)"
+              width="120"
+            ></el-table-column>
             <el-table-column prop="time" label="响应时间">
-              <template slot-scope="scope">{{ new Date(scope.row.time).toLocaleTimeString() }}</template>
+              <template slot-scope="scope">{{
+                new Date(scope.row.time).toLocaleTimeString()
+              }}</template>
             </el-table-column>
             <el-table-column prop="winner" label=" Winner">
               <template slot-scope="scope">
-                <el-tag v-if="scope.row.winner" type="success" size="small">胜出</el-tag>
+                <el-tag v-if="scope.row.winner" type="success" size="small"
+                  >胜出</el-tag
+                >
                 <span v-else style="color: #999">已废弃</span>
               </template>
             </el-table-column>
@@ -170,11 +260,20 @@
     <el-card class="cache-status-card">
       <div slot="header">
         <span>缓存状态</span>
-        <el-button size="mini" type="text" style="float: right" @click="refreshCacheStatus">刷新</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          style="float: right"
+          @click="refreshCacheStatus"
+          >刷新</el-button
+        >
       </div>
       <el-row :gutter="20">
         <el-col :span="6">
-          <el-statistic title="缓存 Key 数量" :value="cacheKeys.length"></el-statistic>
+          <el-statistic
+            title="缓存 Key 数量"
+            :value="cacheKeys.length"
+          ></el-statistic>
         </el-col>
         <el-col :span="18">
           <el-tag
@@ -182,9 +281,11 @@
             :key="key"
             style="margin-right: 10px; margin-bottom: 5px"
           >
-            {{ Array.isArray(key) ? key.join(' > ') : key }}
+            {{ Array.isArray(key) ? key.join(" > ") : key }}
           </el-tag>
-          <span v-if="cacheKeys.length === 0" style="color: #999">暂无缓存</span>
+          <span v-if="cacheKeys.length === 0" style="color: #999"
+            >暂无缓存</span
+          >
         </el-col>
       </el-row>
     </el-card>
@@ -192,72 +293,83 @@
 </template>
 
 <script>
-import { createRequestMixin } from '@/utils/useRequest'
-import { queryCache } from '@/utils/queryCache'
+import { createRequestMixin } from "@/utils/useRequest";
+import { queryCache } from "@/utils/queryCache";
 
 // Mock APIs
-const mockUserApi = () => new Promise((resolve, reject) => {
-  setTimeout(() => resolve({ id: 1, name: '张三', email: 'zhangsan@example.com' }), 800)
-})
+const mockUserApi = () =>
+  new Promise((resolve) => {
+    setTimeout(
+      () => resolve({ id: 1, name: "张三", email: "zhangsan@example.com" }),
+      800
+    );
+  });
 
-const mockProductsApi = () => new Promise((resolve, reject) => {
-  setTimeout(() => resolve([
-    { id: 1, name: 'iPhone 15', category: '电子产品', price: 8999 },
-    { id: 2, name: 'MacBook Pro', category: '电子产品', price: 19999 },
-    { id: 3, name: 'AirPods Pro', category: '电子产品', price: 1899 },
-    { id: 4, name: 'iPad Air', category: '电子产品', price: 4799 },
-    { id: 5, name: 'Apple Watch', category: '电子产品', price: 2999 },
-  ]), 600)
-})
+const mockProductsApi = () =>
+  new Promise((resolve) => {
+    setTimeout(
+      () =>
+        resolve([
+          { id: 1, name: "iPhone 15", category: "电子产品", price: 8999 },
+          { id: 2, name: "MacBook Pro", category: "电子产品", price: 19999 },
+          { id: 3, name: "AirPods Pro", category: "电子产品", price: 1899 },
+          { id: 4, name: "iPad Air", category: "电子产品", price: 4799 },
+          { id: 5, name: "Apple Watch", category: "电子产品", price: 2999 },
+        ]),
+      600
+    );
+  });
 
-const mockErrorApi = () => new Promise((resolve, reject) => {
-  setTimeout(() => reject(new Error('服务器内部错误: 500')), 500)
-})
+const mockErrorApi = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error("服务器内部错误: 500")), 500);
+  });
 
 export default {
-  name: 'RequestDemo',
+  name: "RequestDemo",
 
   mixins: [
     createRequestMixin({
-      name: 'user',
-      queryKey: ['user', 1],
+      name: "user",
+      queryKey: ["user", 1],
       queryFn: mockUserApi,
       staleTime: 0,
       enabled: true,
       onSuccess: () => {
-        this.userFetchedAt = new Date().toLocaleTimeString()
-        this.$message.success('用户数据加载成功')
+        this.userFetchedAt = new Date().toLocaleTimeString();
+        this.$message.success("用户数据加载成功");
       },
       onError: (err) => {
-        this.$message.error(err.message)
-      }
+        this.$message.error(err.message);
+      },
     }),
     createRequestMixin({
-      name: 'products',
-      queryKey: ['products', 'list'],
+      name: "products",
+      queryKey: ["products", "list"],
       queryFn: mockProductsApi,
       staleTime: 0,
       enabled: true,
-      select: (data) => data.map(p => ({ ...p, name: p.name + ' (已选择)' })),
-      onSuccess: (data) => {
-        this.productsFetchedAt = new Date().toLocaleTimeString()
-        this.$message.success('产品列表加载成功')
+      select: (data) => data.map((p) => ({ ...p, name: p.name + " (已选择)" })),
+      onSuccess: () => {
+        this.productsFetchedAt = new Date().toLocaleTimeString();
+        this.$message.success("产品列表加载成功");
       },
       onError: (err) => {
-        this.$message.error(err.message)
-      }
+        this.$message.error(err.message);
+      },
     }),
     createRequestMixin({
-      name: 'testError',
-      queryKey: ['test', 'error'],
-      queryFn: () => new Promise((_resolve, reject) => {
-        setTimeout(() => reject(new Error('手动触发错误')), 300)
-      }),
+      name: "testError",
+      queryKey: ["test", "error"],
+      queryFn: () =>
+        new Promise((_resolve, reject) => {
+          setTimeout(() => reject(new Error("手动触发错误")), 300);
+        }),
       enabled: false,
       onError: (err) => {
-        this.$message.error('错误被 mixin 捕获: ' + err.message)
-      }
-    })
+        this.$message.error("错误被 mixin 捕获: " + err.message);
+      },
+    }),
   ],
 
   data() {
@@ -276,80 +388,96 @@ export default {
       raceRequestId: 0,
 
       // Cache refresh trigger
-      _cacheRefresh: 0
-    }
+      cacheRefresh: 0,
+    };
   },
 
   computed: {
     cacheKeys() {
       // eslint-disable-next-line no-unused-vars
-      const _ = this._cacheRefresh
-      return Array.from(queryCache.keys()).map(k => JSON.parse(k))
-    }
+      const _ = this.cacheRefresh;
+      return Array.from(queryCache.keys()).map((k) => JSON.parse(k));
+    },
   },
 
   methods: {
     // Test methods
     testRaceCondition() {
-      this.raceResults = []
-      this.racing = true
+      this.raceResults = [];
+      this.racing = true;
 
       // Create a mixin instance that fetches with random delay
       const testMixin = createRequestMixin({
-        name: 'race',
-        queryKey: ['race', Date.now()],
-        queryFn: () => new Promise((resolve) => {
-          const delay = Math.random() * 1000 + 200
-          setTimeout(() => resolve({ delay: Math.round(delay), time: Date.now() }), delay)
-        }),
+        name: "race",
+        queryKey: ["race", Date.now()],
+        queryFn: () =>
+          new Promise((resolve) => {
+            const delay = Math.random() * 1000 + 200;
+            setTimeout(
+              () => resolve({ delay: Math.round(delay), time: Date.now() }),
+              delay
+            );
+          }),
         enabled: true,
-        staleTime: 0
-      })
+        staleTime: 0,
+      });
 
       // Apply mixin methods temporarily
-      Object.assign(this, testMixin.data())
-      Object.assign(this, { methods: testMixin.methods })
+      Object.assign(this, testMixin.data());
+      Object.assign(this, { methods: testMixin.methods });
 
       // Fire 3 rapid fetches
-      this.raceFetch()
+      this.raceFetch();
       setTimeout(() => {
-        this.raceFetch()
+        this.raceFetch();
         setTimeout(() => {
-          this.raceFetch()
+          this.raceFetch();
           // Wait for all to settle
           setTimeout(() => {
-            this.racing = false
+            this.racing = false;
             // Show that only the last one's data remains
-            this.raceResults = this.race.data ? [{ id: 1, delay: this.race.data.delay, time: this.race.data.time, winner: true }] : []
-            this.$message.info('竞态测试完成: ' + (this.race.data ? `delay=${this.race.data.delay}ms` : '无数据'))
-          }, 1500)
-        }, 50)
-      }, 50)
+            this.raceResults = this.race.data
+              ? [
+                  {
+                    id: 1,
+                    delay: this.race.data.delay,
+                    time: this.race.data.time,
+                    winner: true,
+                  },
+                ]
+              : [];
+            this.$message.info(
+              "竞态测试完成: " +
+                (this.race.data ? `delay=${this.race.data.delay}ms` : "无数据")
+            );
+          }, 1500);
+        }, 50);
+      }, 50);
     },
 
     triggerError() {
-      this.testErrorFetch()
+      this.testErrorFetch();
     },
 
     testManualError() {
       mockErrorApi()
         .then(() => {})
-        .catch(err => {
-          this.manualErrorData = err.message
-        })
+        .catch((err) => {
+          this.manualErrorData = err.message;
+        });
     },
 
     refreshCacheStatus() {
       // Force Vue to re-compute cacheKeys
-      this._cacheRefresh++
-      this.$message.info('缓存状态已刷新')
-    }
+      this.cacheRefresh++;
+      this.$message.info("缓存状态已刷新");
+    },
   },
 
   created() {
-    console.log('RequestDemo created')
-  }
-}
+    console.log("RequestDemo created");
+  },
+};
 </script>
 
 <style scoped>
