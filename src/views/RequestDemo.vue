@@ -203,6 +203,7 @@
 
 <script>
 import { createRequestMixin } from '@/utils/useRequest'
+import { queryCache } from '@/utils/queryCache'
 
 // Mock APIs
 const mockUserApi = () => new Promise((resolve, reject) => {
@@ -236,9 +237,9 @@ export default {
       name: 'user',
       queryKey: ['user', 1],
       queryFn: mockUserApi,
-      staleTime: () => this.userStaleTime,
-      enabled: () => this.userEnabled,
-      onSuccess: (data) => {
+      staleTime: 0,
+      enabled: true,
+      onSuccess: () => {
         this.userFetchedAt = new Date().toLocaleTimeString()
         this.$message.success('用户数据加载成功')
       },
@@ -250,8 +251,8 @@ export default {
       name: 'products',
       queryKey: ['products', 'list'],
       queryFn: mockProductsApi,
-      staleTime: () => this.productsStaleTime,
-      enabled: () => this.productsEnabled,
+      staleTime: 0,
+      enabled: true,
       select: (data) => data.map(p => ({ ...p, name: p.name + ' (已选择)' })),
       onSuccess: (data) => {
         this.productsFetchedAt = new Date().toLocaleTimeString()
@@ -280,35 +281,22 @@ export default {
 
       // Race condition
       raceResults: [],
-      raceRequestId: 0
+      raceRequestId: 0,
+
+      // Cache refresh trigger
+      _cacheRefresh: 0
     }
   },
 
   computed: {
     cacheKeys() {
-      // This would need access to queryCache internals
-      // For now, show placeholder
-      return []
+      // eslint-disable-next-line no-unused-vars
+      const _ = this._cacheRefresh
+      return Array.from(queryCache.keys()).map(k => JSON.parse(k))
     }
   },
 
   methods: {
-    // User methods
-    userRefetch() {
-      this.userRefetch()
-    },
-    userInvalidate() {
-      this.userInvalidate()
-    },
-
-    // Products methods
-    productsRefetch() {
-      this.productsRefetch()
-    },
-    productsInvalidate() {
-      this.productsInvalidate()
-    },
-
     // Test methods
     testRaceCondition() {
       this.raceResults = []
@@ -346,8 +334,8 @@ export default {
     },
 
     refreshCacheStatus() {
-      // Force computed update
-      this.$forceUpdate()
+      // Force Vue to re-compute cacheKeys
+      this._cacheRefresh++
       this.$message.info('缓存状态已刷新')
     }
   },
