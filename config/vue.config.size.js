@@ -35,6 +35,13 @@ const sizeConfig = defineConfig({
       })
     );
 
+    // 添加 SpeedMeasurePlugin 测量各阶段耗时
+    config.plugins.push(
+      new SpeedMeasurePlugin({
+        exclude: ["MiniCssExtractPlugin"],
+      })
+    );
+
     // 添加分析插件
     if (process.env.ANALYZE === "true") {
       config.plugins.push(
